@@ -36,7 +36,12 @@ class local_users::add (
   $users = lookup( 'local_users::add::users', Data, 'deep', {} )
   $users_keys = lookup( 'local_users::add::keys', Collection, 'unique', [] )
 
-  $users.each | $name, $props | {
+  $users_array = $users ? {
+    Array   => flatten($users),
+    default => [$users]
+  }
+
+  $users_array.each.each | $name, $props | {
     #notify { "Checking user: $user ($props)": }
 
     if $props[generate] {
